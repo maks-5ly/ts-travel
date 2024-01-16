@@ -1,0 +1,216 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Login Credentials"""
+input AuthLoginInput {
+  """Your Email"""
+  email: String!
+
+  """Your Password"""
+  password: String!
+}
+
+input CreateTourInput {
+  """Ending date of the tour"""
+  endingDate: DateTime!
+
+  """Price of the tour in cents"""
+  price: Int!
+
+  """Starting date of the tour"""
+  startingDate: DateTime!
+
+  """ID of the associated travel"""
+  travelId: ID!
+}
+
+input CreateTravelInput {
+  """Description of the travel"""
+  description: String!
+
+  """Public visibility of the travel"""
+  isPublic: Boolean! = false
+
+  """Moods associated with the travel"""
+  moods: MoodsInput!
+
+  """Name of the travel"""
+  name: String!
+
+  """Number of days of the travel"""
+  numberOfDays: Int!
+}
+
+input CreateUserInput {
+  """Email of the user"""
+  email: String!
+
+  """Password of the user"""
+  password: String!
+
+  """Roles assigned to the user"""
+  roles: [RoleEnum!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Moods {
+  culture: Int!
+  history: Int!
+  nature: Int!
+  party: Int!
+  relax: Int!
+}
+
+input MoodsInput {
+  culture: Int! = 0
+  history: Int! = 0
+  nature: Int! = 0
+  party: Int! = 0
+  relax: Int! = 0
+}
+
+type Mutation {
+  createTour(createTourInput: CreateTourInput!): Tour!
+  createTravel(createTravelInput: CreateTravelInput!): Travel!
+  createUser(createUserInput: CreateUserInput!): User!
+  login(loginInput: AuthLoginInput!): UserAndAuthTokens!
+  removeTour(id: String!): Tour!
+  removeTravel(id: ID!): Travel!
+  removeUser(removeUserInput: RemoveUserInput!): User!
+  updateTravel(updateTravelInput: UpdateTravelInput!): Travel!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
+type PaginatedTours {
+  data: [Tour!]
+  pagination: PaginationMeta!
+}
+
+type PaginatedTravels {
+  data: [Travel!]
+  pagination: PaginationMeta!
+}
+
+type PaginationMeta {
+  page: Int!
+  perPage: Int!
+  total: Int!
+  totalPage: Int!
+}
+
+input PaginationSorting {
+  sortByKey: String
+  sortDirection: SortOrder
+}
+
+type Query {
+  travel(slug: String!): Travel!
+  travels(order: [PaginationSorting!], page: Int! = 1, skip: Int! = 0, take: Int! = 25): PaginatedTravels!
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+input RemoveUserInput {
+  """Unique identifier of the user"""
+  id: ID
+}
+
+type Role {
+  createdAt: DateTime!
+  deletedAt: DateTime!
+  id: ID!
+  name: RoleEnum!
+  updatedAt: DateTime!
+}
+
+enum RoleEnum {
+  ADMIN
+  EDITOR
+  USER
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+type Tour {
+  createdAt: DateTime!
+  deletedAt: DateTime!
+
+  """Ending date of the tour"""
+  endingDate: DateTime!
+  id: ID!
+
+  """Name of the tour"""
+  name: String!
+
+  """Price of the tour"""
+  price: Int!
+
+  """Starting date of the tour"""
+  startingDate: DateTime!
+  travel: Travel!
+  updatedAt: DateTime!
+}
+
+type Travel {
+  createdAt: DateTime!
+  deletedAt: DateTime!
+  description: String!
+  id: ID!
+  isPublic: Boolean!
+  moods: Moods!
+  name: String!
+  numberOfDays: Int!
+  numberOfNights: Int!
+  slug: String!
+  tours(order: [PaginationSorting!], page: Int! = 1, skip: Int! = 0, take: Int! = 25): PaginatedTours!
+  updatedAt: DateTime!
+}
+
+input UpdateTravelInput {
+  """Description of the travel"""
+  description: String
+  id: ID!
+
+  """Public visibility of the travel"""
+  isPublic: Boolean = false
+
+  """Moods associated with the travel"""
+  moods: MoodsInput
+
+  """Name of the travel"""
+  name: String
+
+  """Number of days of the travel"""
+  numberOfDays: Int
+}
+
+input UpdateUserInput {
+  """Unique identifier of the user"""
+  id: ID!
+
+  """Roles assigned to the user"""
+  roles: [RoleEnum!]
+}
+
+type User {
+  createdAt: DateTime!
+  deletedAt: DateTime!
+  email: String!
+  id: ID!
+  roles: [Role!]
+  updatedAt: DateTime!
+}
+
+type UserAndAuthTokens {
+  """access token"""
+  accessToken: String!
+  user: User!
+}

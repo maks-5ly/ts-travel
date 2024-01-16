@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  api:
+    container_name: api
+    build:
+      dockerfile: Dockerfile
+      context: api
+      target: development
+    env_file:
+      - api/.env
+    environment:
+      POSTGRES_HOST: postgres_db
+      NODE_PATH: /api
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+      - 9229:9229
+    networks:
+      - app-network
+    volumes:
+      - ./api:/app
+    restart: unless-stopped
+    profiles:
+      - dev
+    links:
+      - postgres_db
+    depends_on:
+      - postgres_db
+    command: /bin/sh -c "yarn start:dev"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+    env_file:
+      - api/.env
+    ports:
+      - ${POSTGRES_PORT}:5432
+    restart: unless-stopped
+    profiles:
+      - dev
+      - db
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+volumes:
+  dbdata:
