@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { UserOutlined, CarOutlined } from '@ant-design/icons-vue'
-import UserView from '@/views/UserView.vue'
+import { RoleEnum } from '@/types'
 export const routes = [
   {
     path: '/',
@@ -15,7 +15,10 @@ export const routes = [
     name: 'users',
     component: () => import('../views/UserView.vue'),
     label: 'Users',
-    icon: UserOutlined
+    icon: UserOutlined,
+    meta: {
+      role: RoleEnum.ADMIN
+    }
   }
   // {
   //   path: '/about',

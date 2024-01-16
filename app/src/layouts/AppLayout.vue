@@ -1,22 +1,46 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router'
 import { Layout, LayoutSider, Menu, MenuItem, LayoutContent, LayoutFooter } from 'ant-design-vue'
+import Header from '@/components/layout/Header.vue'
 
-import { ref, h, watch } from 'vue'
+import { ref, h, watch, watchEffect } from 'vue'
 import { routes } from '@/router'
+import { useAuth } from '@/composables/useAuth'
+import { RoleEnum } from '@/types'
+import compact from 'lodash/compact'
 
 const route = useRoute()
 
-const menuItems = ref(
-  routes.map((route) => ({
-    key: route.name,
-    path: route.path,
-    label: route.label,
-    icon: () => h(route.icon)
-  }))
-)
+const { user, isAdmin, isEditor } = useAuth()
+
+const menuItems = ref([])
 
 const selectedKeys = ref([])
+
+watch(
+  () => user.value,
+  () => {
+    menuItems.value = compact(
+      routes.map((route) => {
+        const role = route?.meta?.role
+        if (role === RoleEnum.ADMIN && !isAdmin.value) {
+          return null
+        }
+
+        if (role === RoleEnum.EDITOR && !(isAdmin.value || isEditor.value)) {
+          return null
+        }
+
+        return {
+          key: route.name,
+          path: route.path,
+          label: route.label,
+          icon: () => h(route.icon)
+        }
+      })
+    )
+  }
+)
 
 watch(
   () => route.name,
@@ -24,12 +48,11 @@ watch(
     selectedKeys.value = [route.name]
   }
 )
-
-// console.log('!_NAME_!', route)
 </script>
 
 <template>
   <Layout has-sider :style="{ minHeight: '90vh', backgroundColor: 'white' }">
+    <Header />
     <LayoutSider class="sider">
       <div class="logo-container">
         <img src="https://5ly.co/content/images/2022/05/home.png" alt="logo" class="logo" />
@@ -80,7 +103,8 @@ watch(
   bottom: 0;
 }
 .content-container {
-  margin: 0;
+  margin-left: 200px;
+  margin-top: 64px;
   background: unset;
   & .content {
     margin: 24px 16px 0;

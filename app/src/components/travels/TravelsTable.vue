@@ -1,9 +1,20 @@
 <script lang="ts" setup>
+import { useAuth } from '@/composables/useAuth'
+
+type Props = {
+  // todo: generate types from gql schema
+  travels: any[]
+  onDelete: (id: string) => Promise<void>
+  onAdd: () => Promise<void>
+}
+
 import { Button, Table, Popconfirm } from 'ant-design-vue'
-import { ref, h } from 'vue'
+import { ref, h, watch } from 'vue'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue'
 
-const props = defineProps(['travels'])
+const { travels, onDelete, onAdd } = defineProps<Props>()
+
+const { user, isAdmin } = useAuth()
 
 const columns = ref([
   {
@@ -18,31 +29,41 @@ const columns = ref([
   {
     title: 'Duration (days/ nights)',
     dataIndex: 'duration'
-  },
-  // TODO: render button if user has admin/editor persmissions
-  {
-    title: 'Operation',
-    dataIndex: 'operation'
   }
 ])
 
-const edit = (key: string) => {
-  console.log('!_EDIT_!', key)
+watch(
+  () => user.value,
+  () => {
+    if (isAdmin.value) {
+      columns.value.push({
+        title: 'Operation',
+        dataIndex: 'operation'
+      })
+    } else {
+      columns.value = columns.value.filter((column) => column.dataIndex !== 'operation')
+    }
+  }
+)
+
+const handleDelete = (key: string) => {
+  onDelete && onDelete(key)
 }
 
-const onDelete = (key: string) => {
-  console.log('!_DELETE_!', key)
+const handleAdd = () => {
+  onAdd()
 }
-
-const handleAdd = () => {}
 </script>
 
 <template>
-  <!--TODO: render button if user has admin/editor persmissions -->
-  <Button v-if="true" class="editable-add-btn" style="margin-bottom: 8px" @click="handleAdd"
+  <Button
+    v-if="isAdmin?.value"
+    class="editable-add-btn"
+    style="margin-bottom: 8px"
+    @click="handleAdd"
     >Add</Button
   >
-  <Table bordered :data-source="props.travels" :columns="columns">
+  <Table bordered :data-source="travels" :columns="columns">
     <template #bodyCell="{ column, text, record }">
       <template v-if="column.dataIndex === 'name'">
         <div class="editable-cell">
@@ -54,10 +75,14 @@ const handleAdd = () => {}
       <!--  todo: show only for admin/editor    -->
       <template v-else-if="column.dataIndex === 'operation'">
         <div class="operations-cell">
-          <Popconfirm v-if="true" title="Sure to delete?" @confirm="onDelete(record.key)">
+          <Popconfirm
+            :v-if="isAdmin?.value"
+            title="Sure to delete?"
+            @confirm="handleDelete(record.id)"
+          >
             <Button :icon="h(DeleteOutlined)" />
           </Popconfirm>
-          <RouterLink :to="`/travel/${record.id}`">
+          <RouterLink :v-if="isAdmin?.value" :to="`/travel/${record.id}`">
             <Button :icon="h(EditOutlined)" />
           </RouterLink>
         </div>
