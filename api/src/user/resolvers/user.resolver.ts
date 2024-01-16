@@ -1,9 +1,18 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { UserService } from '@/user/services';
 import { User } from '@/user/entities';
 import { CreateUserInput, RemoveUserInput, UpdateUserInput } from '@/user/dto';
 import { AuthGuard } from '@/auth/guard';
 import { RoleEnum } from '@/roles/type';
+import { Role } from '@/roles/entities';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -35,5 +44,10 @@ export class UserResolver {
   @Mutation(() => User)
   removeUser(@Args('removeUserInput') removeUserInput: RemoveUserInput) {
     return this.userService.remove(removeUserInput.id);
+  }
+
+  @ResolveField('roles', () => [Role])
+  roles(@Parent() user: User) {
+    return this.userService.getUserRoles(user);
   }
 }

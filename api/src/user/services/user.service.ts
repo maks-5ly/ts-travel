@@ -77,4 +77,17 @@ export class UserService {
 
     return this.userRepository.remove(user);
   }
+
+  async getUserRoles(user: User) {
+    return (
+      (
+        await this.userRepository.findOne({
+          where: {
+            id: user.id,
+          },
+          relations: ['roles'],
+        })
+      ).roles || []
+    );
+  }
 }
