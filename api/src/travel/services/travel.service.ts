@@ -23,8 +23,15 @@ export class TravelService {
     );
   }
 
-  findAll(listTravelInput: ListTravelInput): Promise<IPaginatedType<Travel>> {
-    const qb = this.getListQueryBuilder();
+  findAll(
+    listTravelInput: ListTravelInput,
+    isAdmin = false,
+  ): Promise<IPaginatedType<Travel>> {
+    const qb = this.getListQueryBuilder('travel');
+
+    if (!isAdmin) {
+      qb.andWhere('travel.isPublic = true');
+    }
 
     return this.paginationService.getPaginatedData({
       queryBuilder: qb,
@@ -57,7 +64,7 @@ export class TravelService {
     return this.travelsRepository.remove(travel);
   }
 
-  private getListQueryBuilder() {
-    return this.travelsRepository.createQueryBuilder('travel');
+  private getListQueryBuilder(alias: string) {
+    return this.travelsRepository.createQueryBuilder(alias);
   }
 }

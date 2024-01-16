@@ -2,6 +2,8 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '@/user/services';
 import { User } from '@/user/entities';
 import { CreateUserInput, RemoveUserInput, UpdateUserInput } from '@/user/dto';
+import { AuthGuard } from '@/auth/guard';
+import { RoleEnum } from '@/roles/type';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -12,6 +14,9 @@ export class UserResolver {
     return this.userService.create(createUserInput);
   }
 
+  @AuthGuard({
+    role: RoleEnum.ADMIN,
+  })
   @Query(() => [User], { name: 'users' })
   findAll() {
     return this.userService.findAll();

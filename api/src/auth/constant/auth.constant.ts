@@ -1,2 +1,1 @@
-export const AUTH_TYPE = 'JWT';
-export const SYSTEM_ROLE_ONLY_META_KEY = 'SystemRoleOnlyMetaKey';
+export const AUTH_ROLE_META_KEY = 'AuthRoleMetaKey';

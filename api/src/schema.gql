@@ -75,6 +75,7 @@ input MoodsInput {
 }
 
 type Mutation {
+  """Endpoint for admins/editors which allows to Create tour"""
   createTour(createTourInput: CreateTourInput!): Tour!
   createTravel(createTravelInput: CreateTravelInput!): Travel!
   createUser(createUserInput: CreateUserInput!): User!
@@ -82,6 +83,9 @@ type Mutation {
   removeTour(id: String!): Tour!
   removeTravel(id: ID!): Travel!
   removeUser(removeUserInput: RemoveUserInput!): User!
+
+  """Endpoint for admins/editors which allows to Update tour"""
+  updateTour(updateTourInput: UpdateTourInput!): Tour!
   updateTravel(updateTravelInput: UpdateTravelInput!): Travel!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
@@ -172,6 +176,18 @@ type Travel {
   slug: String!
   tours(order: [PaginationSorting!], page: Int! = 1, skip: Int! = 0, take: Int! = 25): PaginatedTours!
   updatedAt: DateTime!
+}
+
+input UpdateTourInput {
+  """Ending date of the tour"""
+  endingDate: DateTime
+  id: ID!
+
+  """Price of the tour in cents"""
+  price: Int
+
+  """Starting date of the tour"""
+  startingDate: DateTime
 }
 
 input UpdateTravelInput {

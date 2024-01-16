@@ -42,8 +42,9 @@ export class ResponseTimeoutInterceptor
         context.getHandler(),
       );
 
-      const defaultTimeout: number =
-        this.configService.get<number>('app.http.timeout');
+      const defaultTimeout: number = this.configService.get<number>(
+        'middleware.timeout.in',
+      );
 
       return next.handle().pipe(
         timeout(

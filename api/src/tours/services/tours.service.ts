@@ -8,6 +8,7 @@ import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/services/pagination.service';
 import { ListToursInput } from '@/tours/dto/list.tours.input';
 import { IPaginatedType } from '@/utils/pagination/type';
+import { UpdateTourInput } from '@/tours/dto/update-tour.input';
 
 @Injectable()
 export class ToursService {
@@ -18,15 +19,35 @@ export class ToursService {
     private readonly paginationService: PaginationService,
   ) {}
 
+  formatPrice(price: number) {
+    // todo: move multiplier to Config
+    return price ? price * 100 : price;
+  }
+
   create({ price, endingDate, startingDate }: CreateTourInput, travel: Travel) {
     const tour = this.toursRepository.create({
-      price: price * 100,
+      price: this.formatPrice(price),
       endingDate,
       startingDate,
       // todo: add CODE to tour and use code
       name: `${travel.id}_${this.helperDateService.format(startingDate)}`,
       travel,
     });
+    return this.toursRepository.save(tour);
+  }
+
+  async update({ id, price, ...rest }: UpdateTourInput) {
+    const tour = await this.toursRepository.findOneOrFail({
+      where: {
+        id,
+      },
+    });
+
+    Object.assign(tour, {
+      ...rest,
+      ...(price && { price: this.formatPrice(price) }),
+    });
+
     return this.toursRepository.save(tour);
   }
 
@@ -66,7 +87,10 @@ export class ToursService {
     return this._mapResultToIds(travelIds, tours);
   }
 
-  // TODO: move to DataLoader service
+  /**
+   * TODO: move to DataLoader service as it's generic function
+   *       which should be used in another dataloaders
+   */
   private _mapResultToIds(travelIds: string[], tours: IPaginatedType<Tour>) {
     return travelIds.map((travelId) => ({
       pagination: tours.pagination,
