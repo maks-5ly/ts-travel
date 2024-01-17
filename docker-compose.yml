@@ -1,4 +1,5 @@
 version: '3.9'
+
 services:
   api:
     container_name: api
@@ -6,8 +7,6 @@ services:
       dockerfile: Dockerfile
       context: api
       target: development
-    env_file:
-      - api/.env
     environment:
       POSTGRES_HOST: postgres_db
       NODE_PATH: /api
@@ -25,9 +24,25 @@ services:
       - postgres_db
     depends_on:
       - postgres_db
-    command: /bin/sh -c "yarn start:dev"
+    command: /bin/sh -c "yarn && yarn start:dev"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  app:
+    build:
+      context: app
+      target: source
+      dockerfile: Dockerfile
+    command: sh -c "npm i && npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app
+    environment:
+      - NODE_PATH=/app
+      - PORT=51173
+    profiles:
+      - dev
 
   postgres_db:
     container_name: postgres_db
@@ -40,7 +55,7 @@ services:
     networks:
       - app-network
     env_file:
-      - api/.env
+      - ./api/.env
     ports:
       - ${POSTGRES_PORT}:5432
     restart: unless-stopped

@@ -4,10 +4,11 @@ import { DataSourceOptions } from 'typeorm';
 
 import { TypeormSnakeCaseNamingStrategy } from '@/db/naming-strategy';
 import { join } from 'node:path';
+import { SeederOptions } from 'typeorm-extension';
 
 export default registerAs(
   'database',
-  (): Record<string, boolean | DataSourceOptions> => ({
+  (): Record<string, boolean | (DataSourceOptions & SeederOptions)> => ({
     debug: process.env.DATABASE_DEBUG === 'true',
     autoCreateDB: process.env.AUTO_CREATE_DB === 'true',
     connection: {
@@ -20,7 +21,8 @@ export default registerAs(
       username: process.env.POSTGRES_USER,
       logging: process.env.DATABASE_DEBUG === 'true',
       entities: [join(__dirname, '/../**/*.entity{.ts,.js}')],
-      migrations: [join(__dirname + `/../db/migrations/**/*{.ts,.js}`)],
+      migrations: [join(__dirname, `/../db/migrations/**/*{.ts,.js}`)],
+      seeds: [join(__dirname, `/../db/seeds/**/*{.ts,.js}`)],
       namingStrategy: new TypeormSnakeCaseNamingStrategy(),
       migrationsTransactionMode: 'each',
       migrationsRun: false,

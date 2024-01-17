@@ -3,7 +3,7 @@ import { setContext } from '@apollo/client/link/context'
 import { LocalstorageService } from '@/service/localstorage'
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_API_URL
+  uri: `${import.meta.env.VITE_API_URL}/graphql`
 })
 
 const cache = new InMemoryCache()

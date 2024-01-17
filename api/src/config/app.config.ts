@@ -21,5 +21,11 @@ export default registerAs(
     },
 
     httpOn: process.env.APP_HTTP_ON === 'true',
+    system: {
+      admin: {
+        email: process.env.SYSTEM_ADMIN_EMAIL,
+        password: process.env.SYSTEM_ADMIN_PASSWORD || '123456',
+      },
+    },
   }),
 );

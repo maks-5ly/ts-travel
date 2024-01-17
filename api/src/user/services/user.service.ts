@@ -33,7 +33,6 @@ export class UserService {
         roles,
       }),
     );
-    return 'This action adds a new user';
   }
 
   findAll() {

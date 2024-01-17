@@ -1,4 +1,11 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Resolver,
+  ResolveField,
+  Parent
+} from '@nestjs/graphql';
 import { ToursService } from '@/tours/services';
 import { Tour } from '../entities/tour.entity';
 import { CreateTourInput } from '../dto/create-tour.input';
@@ -45,5 +52,12 @@ export class ToursResolver {
   @Mutation(() => Tour)
   removeTour(@Args('id', { type: () => String }) id: string) {
     return this.toursService.remove(id);
+  }
+
+  @ResolveField('price', () => Int)
+  price(
+    @Parent() tour: Tour
+  ) {
+    return tour.price ? tour.price / 100 : tour.price;
   }
 }

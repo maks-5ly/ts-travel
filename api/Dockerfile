@@ -18,7 +18,8 @@ RUN apk --no-cache add --virtual builds-deps build-base python3 && \
   apk del builds-deps
 
 # Bundle app source
-COPY --chown=node:node .. .
+COPY --chown=node:node . .
+RUN chmod -R 777 ./
 
 USER node
 
@@ -35,8 +36,9 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node ../package.json yarn.lock .npmrc ./
+COPY --chown=node:node ../package.json yarn.lock ./
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=development /usr/src/app/dist ./dist
 COPY --chown=node:node .. .
 
 RUN yarn build
