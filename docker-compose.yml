@@ -40,7 +40,7 @@ services:
       - ./app:/app
     environment:
       - NODE_PATH=/app
-      - PORT=51173
+      - PORT=3000
     profiles:
       - dev
 
