@@ -1,6 +1,5 @@
 add `.env` file into the `app` directory
 
-it requires only 1 variable
 
 ```dotenv
 VITE_API_URL=http:localhost:PORT # REPLACE PORT with value you set in api/.env
@@ -49,3 +48,7 @@ After you have added the `.env` files, the project can be started with the follo
 ```shell
  docker compose --env-file=./api/.env --profile dev up --build --wait
 ```
+
+
+**P.S.**
+Unfortunately, due to lack of time, I did not generate TypeScript types from the GraphQL schema for the frontend app.
