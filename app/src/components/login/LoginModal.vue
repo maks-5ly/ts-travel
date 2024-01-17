@@ -11,8 +11,8 @@ const showModal = () => {
 }
 
 const form = reactive({
-  email: 'maksim.z@5ly.co',
-  password: '1QaZ-2WsX'
+  email: '',
+  password: ''
 })
 
 const handleOk = () => {
