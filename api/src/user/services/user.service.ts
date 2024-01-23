@@ -18,8 +18,7 @@ export class UserService {
 
   async create({ email, password, roles: rolesInput }: CreateUserInput) {
     const roles = await this.rolesService.findRolesByNames(rolesInput);
-
-    if (!roles?.length) {
+    if (rolesInput?.length && !roles?.length) {
       throw new UnprocessableEntityException({
         message: 'User can not be created without role',
       });
@@ -36,13 +35,7 @@ export class UserService {
   }
 
   findAll() {
-    return this.userRepository.find({
-      relations: ['roles'],
-    });
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.find();
   }
 
   async update(
@@ -80,7 +73,7 @@ export class UserService {
   async getUserRoles(user: User) {
     return (
       (
-        await this.userRepository.findOne({
+        await this.userRepository.findOneOrFail({
           where: {
             id: user.id,
           },

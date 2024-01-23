@@ -9,17 +9,11 @@ import { Reflector } from '@nestjs/core';
 import { AUTH_ROLE_META_KEY } from '@/auth/constant';
 import { IRequestContext } from '@/utils/request/type/request.interface';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { RoleEnum } from '@/roles/type';
 
 @Injectable()
 export class UserAclGuard implements CanActivate {
-  constructor(
-    private readonly reflector: Reflector,
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly reflector: Reflector) {}
 
   getGqlContext(context: ExecutionContext) {
     return GqlExecutionContext.create(context);

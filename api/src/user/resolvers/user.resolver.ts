@@ -1,6 +1,5 @@
 import {
   Args,
-  Int,
   Mutation,
   Parent,
   Query,
@@ -27,25 +26,29 @@ export class UserResolver {
     role: RoleEnum.ADMIN,
   })
   @Query(() => [User], { name: 'users' })
-  findAll() {
+  findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
-  @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
-  }
-
+  @AuthGuard({
+    role: RoleEnum.ADMIN,
+  })
   @Mutation(() => User)
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return this.userService.update(updateUserInput.id, updateUserInput);
   }
 
+  @AuthGuard({
+    role: RoleEnum.ADMIN,
+  })
   @Mutation(() => User)
   removeUser(@Args('removeUserInput') removeUserInput: RemoveUserInput) {
     return this.userService.remove(removeUserInput.id);
   }
 
+  @AuthGuard({
+    role: RoleEnum.ADMIN,
+  })
   @ResolveField('roles', () => [Role])
   roles(@Parent() user: User) {
     return this.userService.getUserRoles(user);

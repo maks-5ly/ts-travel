@@ -4,7 +4,7 @@ import {
   Mutation,
   Resolver,
   ResolveField,
-  Parent
+  Parent,
 } from '@nestjs/graphql';
 import { ToursService } from '@/tours/services';
 import { Tour } from '../entities/tour.entity';
@@ -55,9 +55,7 @@ export class ToursResolver {
   }
 
   @ResolveField('price', () => Int)
-  price(
-    @Parent() tour: Tour
-  ) {
+  price(@Parent() tour: Tour) {
     return tour.price ? tour.price / 100 : tour.price;
   }
 }
