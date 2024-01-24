@@ -10,7 +10,7 @@ import { RoleEnum } from '@/roles/type';
 import { Role } from '@/roles/entities';
 import { serviceMockFactory } from '../../../factories';
 
-describe.skip('UserResolver', () => {
+describe('UserResolver', () => {
   let resolverMock: UserResolver;
   let userServiceMock: MockType<UserService>;
 

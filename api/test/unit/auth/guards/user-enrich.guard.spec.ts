@@ -7,7 +7,7 @@ import { faker } from '@faker-js/faker';
 import { User } from '@/user/entities';
 import { IRequestContext } from '@/utils/request/type/request.interface';
 
-describe.skip('UserEnrichGuard', () => {
+describe('UserEnrichGuard', () => {
   const mockExecutionContext: ExecutionContext = {
     getHandler: jest.fn(),
     getClass: jest.fn(),

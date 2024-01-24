@@ -7,7 +7,7 @@ import { MockType } from '../../../types';
 import { RoleEnum } from '@/roles/type';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-describe.skip('UserAclGuard', () => {
+describe('UserAclGuard', () => {
   let guard: UserAclGuard;
   let reflector: MockType<Reflector>;
 

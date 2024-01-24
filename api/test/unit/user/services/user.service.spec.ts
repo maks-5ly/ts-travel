@@ -13,7 +13,7 @@ import { Role } from '@/roles/entities';
 import { repositoryMockFactory, serviceMockFactory } from '../../../factories';
 import { MockType } from '../../../types';
 
-describe.skip('UserService', () => {
+describe('UserService', () => {
   let service: UserService;
   let userRepositoryMock: MockType<Repository<User>>;
   let authServiceMock: MockType<AuthService>;
