@@ -5,10 +5,10 @@ import {
 } from '@/utils/helper/service';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { serviceMockFactory } from '../../../test/factories';
-import { MockType } from '../../../test/types';
+import { serviceMockFactory } from '../../../factories';
+import { MockType } from '../../../types';
 
-describe.skip('AuthService', () => {
+describe('AuthService', () => {
   let service: AuthService;
   let helperHashService: MockType<HelperHashService>;
   let helperEncryptionService: MockType<HelperEncryptionService>;
