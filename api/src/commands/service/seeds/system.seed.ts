@@ -5,6 +5,7 @@ import { User } from '@/user/entities';
 import { Role } from '@/roles/entities';
 import { RoleEnum } from '@/roles/type';
 import { Injectable } from '@nestjs/common';
+import { UserService } from '@/user/services';
 
 @Injectable()
 export class SystemSeedService {
@@ -12,6 +13,7 @@ export class SystemSeedService {
     @InjectDataSource()
     private readonly dataSource: DataSource,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   async run() {
@@ -42,19 +44,14 @@ export class SystemSeedService {
         upsertType: 'on-conflict-do-update',
       });
 
-      const adminRole = await rolesRepository.findOne({
-        where: {
-          name: RoleEnum.ADMIN,
-        },
-      });
-
       if (!existingUser) {
-        await userRepository.save(
-          userRepository.create({
+        await this.userService.create(
+          {
             email: adminEmail,
             password: password,
-            roles: [adminRole],
-          }),
+            roles: [RoleEnum.ADMIN],
+          },
+          em,
         );
       }
     });

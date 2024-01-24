@@ -28,6 +28,7 @@ export class Tour extends BaseEntity<Tour> {
   @Field(() => Travel)
   @ManyToOne(() => Travel, (travel) => travel.tours, {
     onDelete: 'CASCADE',
+    cascade: true,
   })
   @JoinColumn()
   travel: Travel;
@@ -35,6 +36,12 @@ export class Tour extends BaseEntity<Tour> {
   @Column('uuid', { name: 'travel_id' })
   travelId: string;
 
+  /**
+   *  @comment
+   *  i moved it from hook because there was no requirement how this values should be used across the app
+   *  so I decided that for some calculations/comparisons, etc. it should be in cents, and last 2 digits
+   *  are cut off when it's returned to the client
+   */
   // @BeforeInsert()
   // @BeforeUpdate()
   // setDbPrice() {

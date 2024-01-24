@@ -1,7 +1,7 @@
 import request from 'supertest-graphql';
 import gql from 'graphql-tag';
 import { IntegrationTestManager } from '../../integratoin-test-manager';
-import { createUserInputDtoStub } from '../../../factories/auth/dto/create-user-input.dto.stub';
+import { createTravelInputDtoStub } from '../../../factories/auth/dto/create-travel-input-dto.stub';
 import { Travel } from '@/travel/entities/travel.entity';
 import { UserService } from '@/user/services';
 import { faker } from '@faker-js/faker';
@@ -35,7 +35,7 @@ describe('TravelResolver', () => {
       }
     `;
     it('should throw Unauthorized error for unauthorized users', async () => {
-      const createTravelInput = createUserInputDtoStub();
+      const createTravelInput = createTravelInputDtoStub();
 
       const response = await request<{ createTravel: Travel }>(server)
         .mutate(mutation)
@@ -58,7 +58,7 @@ describe('TravelResolver', () => {
 
       const token = await IntegrationTestManager.getAuthorizedUserToken(user);
 
-      const createTravelInput = createUserInputDtoStub();
+      const createTravelInput = createTravelInputDtoStub();
 
       const response = await request<{ createTravel: Travel }>(server)
         .set('Authorization', `Bearer ${token}`)
@@ -73,7 +73,7 @@ describe('TravelResolver', () => {
     it('should create travel', async () => {
       const token = await IntegrationTestManager.getAuthorizedUserToken();
 
-      const createTravelInput = createUserInputDtoStub();
+      const createTravelInput = createTravelInputDtoStub();
       const travelService =
         IntegrationTestManager.getService<TravelService>(TravelService);
 

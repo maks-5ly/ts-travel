@@ -2,7 +2,7 @@ import { CreateTravelInput } from '@/travel/dto/create-travel.input';
 import { faker } from '@faker-js/faker';
 import { isDefined } from 'class-validator';
 
-export function createUserInputDtoStub(
+export function createTravelInputDtoStub(
   createTravelInput?: CreateTravelInput,
 ): CreateTravelInput {
   return {

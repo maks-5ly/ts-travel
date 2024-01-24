@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { CreateUserInput } from '../dto/create-user.input';
 import { UpdateUserInput } from '../dto/update-user.input';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from '@/user/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RolesService } from '@/roles/services';
@@ -16,17 +16,27 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
-  async create({ email, password, roles: rolesInput }: CreateUserInput) {
-    const roles = await this.rolesService.findRolesByNames(rolesInput);
+  async create(
+    { email, password, roles: rolesInput }: CreateUserInput,
+    entityManager?: EntityManager,
+  ) {
+    const roles = await this.rolesService.findRolesByNames(
+      rolesInput,
+      entityManager,
+    );
     if (rolesInput?.length && !roles?.length) {
       throw new UnprocessableEntityException({
         message: 'User can not be created without role',
       });
     }
 
+    const repository = entityManager
+      ? entityManager.getRepository(User)
+      : this.userRepository;
+
     const { passwordHash } = await this.authService.createPassword(password);
-    return this.userRepository.save(
-      this.userRepository.create({
+    return repository.save(
+      repository.create({
         email,
         password: passwordHash,
         roles,
