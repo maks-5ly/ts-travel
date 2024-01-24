@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { UserOutlined, CarOutlined } from '@ant-design/icons-vue'
 import { RoleEnum } from '@/types'
-import { useAuth } from '@/composables/useAuth';
+import { LocalstorageService } from '@/service/localstorage'
+
 export const routes = [
   {
     path: '/',
@@ -29,18 +30,25 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const store = useAuth()
+  const user = LocalstorageService.getUser()
+
   if (!to.meta.role) {
     return next()
   }
 
-  if (to.meta.role === RoleEnum.ADMIN && !store.isAdmin.value) {
+  if (to.meta.role === RoleEnum.ADMIN && !user?.roles.find(role => role.name === RoleEnum.ADMIN)) {
     return next({ name: 'home' })
   }
 
-  if (to.meta.role === RoleEnum.EDITOR && !store.isEditor.value) {
+  if (
+    to.meta.role === RoleEnum.EDITOR && user?.roles.some(
+      role => role.name === RoleEnum.ADMIN || role.name === RoleEnum.EDITOR
+    )
+  ) {
     return next({ name: 'home' })
   }
+
+  return next()
 })
 
 export default router

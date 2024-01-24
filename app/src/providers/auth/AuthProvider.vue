@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, provide, reactive, ref } from 'vue'
+import { computed, onBeforeMount, provide, ref } from 'vue'
 import { AUTH_PROVIDER_KEY } from '@/constants'
 import { useApolloClient, useMutation } from '@vue/apollo-composable'
 import { LOGIN_MUTATION } from '@/graphql/mutations'
 import { LocalstorageService } from '@/service/localstorage'
-import { RoleEnum, type User } from '@/types'
+import { RoleEnum } from '@/types'
+import { useRouter } from 'vue-router'
 
 const { resolveClient } = useApolloClient()
+const router = useRouter();
 
 const user = ref(null)
 
@@ -31,12 +33,15 @@ const isEditor = computed(() => {
 })
 
 const logout = async () => {
-  LocalstorageService.clearUser()
-  LocalstorageService.clearAuthToken()
-  user.value = null
-  const apolloClient = resolveClient()
-  await apolloClient.clearStore()
-  await apolloClient.resetStore()
+  try {
+    LocalstorageService.clearUser()
+    LocalstorageService.clearAuthToken()
+    user.value = null
+    await router.push({ name: 'home' })
+
+  } catch (e) {
+    console.log('!_ERROR)_!', e)
+  }
 }
 
 provide(AUTH_PROVIDER_KEY, {

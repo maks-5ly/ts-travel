@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Users from '@/components/users/Users.vue';
+</script>
 
 <template>
-  <p>USERS</p>
+  <Users />
 </template>
 
 <style scoped></style>

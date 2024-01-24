@@ -34,3 +34,18 @@ export const TRAVELS_QUERY = gql`
     }
   }
 `
+
+
+export const USERS_QUERY = gql`
+  query getUsers {
+    users {
+      id
+      email
+      roles {
+        id
+        name
+      }
+      createdAt
+    }
+  }
+`

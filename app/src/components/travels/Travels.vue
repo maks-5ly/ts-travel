@@ -49,6 +49,6 @@ watch(
   <p>Travels</p>
   <div v-if="loading">Loading</div>
   <pre v-else>
-    <TravelsTable :travels="result.travels.data" :on-delete="onDelete" :on-add="onAdd"/>
+    <TravelsTable :travels="result?.travels?.data || []" :on-delete="onDelete" :on-add="onAdd"/>
   </pre>
 </template>
