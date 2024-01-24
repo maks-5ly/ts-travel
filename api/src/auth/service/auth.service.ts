@@ -28,6 +28,12 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  async createAccessTokenForUser(user: User): Promise<string> {
+    return this.createAccessToken({
+      ...this.serializationJwtPayload(user),
+    });
+  }
+
   async createAccessToken(payload: Record<string, any>): Promise<string> {
     return this.helperEncryptionService.jwtEncrypt(payload, {
       secretKey: this.accessTokenSecretToken,

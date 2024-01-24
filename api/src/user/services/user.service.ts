@@ -38,6 +38,15 @@ export class UserService {
     return this.userRepository.find();
   }
 
+  findBy(keys: Partial<User>, relations?: string[]) {
+    return this.userRepository.findOneOrFail({
+      where: {
+        ...keys,
+      },
+      relations,
+    });
+  }
+
   async update(
     id: string,
     { roles: rolesInput, ...restInput }: UpdateUserInput,

@@ -1,11 +1,11 @@
 {
   "testTimeout": 30000,
   "rootDir": "..",
-  "modulePaths": ["."],
+  "modulePaths": [".", "<rootDir>/test"],
   "moduleDirectories": [
     "node_modules",
     "src",
-    "tests"
+    "test"
   ],
   "testEnvironment": "node",
   "testMatch": ["<rootDir>/test/unit/**/*.spec.ts"],
@@ -16,5 +16,5 @@
   "moduleNameMapper": {
     "@/(.*)": "<rootDir>/src/$1"
   },
-  "setupFilesAfterEnv": ["<rootDir>/test/env/setupEnv.unit.ts"]
+  "setupFilesAfterEnv": ["<rootDir>/test/env/setupAfterEnv.unit.ts"]
 }

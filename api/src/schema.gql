@@ -115,7 +115,6 @@ input PaginationSorting {
 type Query {
   travel(slug: String!): Travel!
   travels(order: [PaginationSorting!], page: Int! = 1, skip: Int! = 0, take: Int! = 25): PaginatedTravels!
-  user(id: Int!): User!
   users: [User!]!
 }
 

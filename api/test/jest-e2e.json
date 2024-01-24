@@ -1,12 +1,20 @@
 {
+  "testTimeout": 30000,
+  "rootDir": "..",
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "modulePaths": [".", "<rootDir>/test"],
+  "moduleDirectories": [
+    "node_modules",
+    "src",
+    "test"
+  ],
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testMatch": ["<rootDir>/test/integration/**/*.spec.ts"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
     "@/(.*)": "<rootDir>/src/$1"
-  }
+  },
+  "setupFilesAfterEnv": ["<rootDir>/test/env/setupAfterEnv.e2e.ts"]
 }

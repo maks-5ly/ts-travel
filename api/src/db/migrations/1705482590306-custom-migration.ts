@@ -2,12 +2,16 @@ import { MigrationInterface } from 'typeorm';
 import { NestFactory } from '@nestjs/core';
 import { CommandsModule } from '@/commands/commands.module';
 import { SystemSeedService } from '@/commands/service/seeds';
+import * as process from 'process';
 
 export class CustomMigration1705482590306 implements MigrationInterface {
   public async up(): Promise<void> {
-    const context = await NestFactory.createApplicationContext(CommandsModule);
-    const service = context.get(SystemSeedService);
-    await service.run();
+    if (process.env.NODE_ENV !== 'test') {
+      const app = await NestFactory.createApplicationContext(CommandsModule);
+      const systemSeedService = app.get<SystemSeedService>(SystemSeedService);
+      await systemSeedService.run();
+      await app.close();
+    }
   }
 
   public async down(): Promise<void> {}

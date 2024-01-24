@@ -18,9 +18,7 @@ export class AuthResolver {
   ): Promise<UserAndAuthTokens> {
     return {
       user,
-      accessToken: await this.authService.createAccessToken({
-        ...this.authService.serializationJwtPayload(user),
-      }),
+      accessToken: await this.authService.createAccessTokenForUser(user),
     };
   }
 }

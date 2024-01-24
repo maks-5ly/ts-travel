@@ -18,4 +18,8 @@ export class RolesService {
       },
     });
   }
+
+  async findAll() {
+    return this.rolesRepository.find();
+  }
 }

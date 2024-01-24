@@ -1,7 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { UserService } from '@/user/services';
 import { User } from '@/user/entities';
 import { Role } from '@/roles/entities';
 import { RoleEnum } from '@/roles/type';
@@ -13,7 +12,6 @@ export class SystemSeedService {
     @InjectDataSource()
     private readonly dataSource: DataSource,
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
   ) {}
 
   async run() {
@@ -44,12 +42,20 @@ export class SystemSeedService {
         upsertType: 'on-conflict-do-update',
       });
 
+      const adminRole = await rolesRepository.findOne({
+        where: {
+          name: RoleEnum.ADMIN,
+        },
+      });
+
       if (!existingUser) {
-        await this.userService.create({
-          email: adminEmail,
-          password: password,
-          roles: [RoleEnum.ADMIN],
-        });
+        await userRepository.save(
+          userRepository.create({
+            email: adminEmail,
+            password: password,
+            roles: [adminRole],
+          }),
+        );
       }
     });
   }

@@ -4,6 +4,7 @@ import AuthConfig from './auth.config';
 import DbConfig from './database.config';
 import ThrottleConfig from './throttle.config';
 import MiddlewareConfig from './middleware.config';
+import * as process from 'process';
 
 export const Configs = [
   AppConfig,
@@ -18,6 +19,6 @@ export const ConfigModuleRoot = ConfigModule.forRoot({
   ignoreEnvFile: false,
   isGlobal: true,
   cache: true,
-  envFilePath: ['.env'],
+  envFilePath: [process.env.NODE_ENV === 'test' ? '.env.test' : '.env'],
   expandVariables: true,
 });
