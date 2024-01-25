@@ -49,6 +49,19 @@ After you have added the `.env` files, the project can be started with the follo
  docker compose --env-file=./api/.env --profile dev up --build --wait
 ```
 
+**TEST**
+run tests in the `api` directory
+
+```shell
+ yarn install
+ yarn test
+```
+```shell
+ yarn install
+ yarn test:unit # <-- run unit tests
+ yarn test:e2e # <-- run e2e tests
+```
+
 
 **P.S.**
 Unfortunately, due to lack of time, I did not generate TypeScript types from the GraphQL schema for the frontend app.
