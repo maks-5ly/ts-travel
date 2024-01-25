@@ -29,7 +29,7 @@ export class ToursService {
       price: this.formatPrice(price),
       endingDate,
       startingDate,
-      // todo: add CODE to tour and use code
+      // todo: add CODE field to Travel and use code
       name: `${travel.id}_${this.helperDateService.format(startingDate)}`,
       travel,
     });

@@ -26,5 +26,5 @@ export class PaginationArgs<T> implements IPaginationOptions {
   page?: number;
 
   @Field(() => [PaginationSorting], { nullable: true })
-  order: PaginationSorting<T>[];
+  order?: PaginationSorting<T>[];
 }

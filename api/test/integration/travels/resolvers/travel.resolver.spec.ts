@@ -1,12 +1,17 @@
-import request from 'supertest-graphql';
+import { faker } from '@faker-js/faker';
 import gql from 'graphql-tag';
+import request from 'supertest-graphql';
+
 import { IntegrationTestManager } from '../../integratoin-test-manager';
-import { createTravelInputDtoStub } from '../../../factories/auth/dto/create-travel-input-dto.stub';
 import { Travel } from '@/travel/entities/travel.entity';
 import { UserService } from '@/user/services';
-import { faker } from '@faker-js/faker';
 import { RoleEnum } from '@/roles/type';
 import { TravelService } from '@/travel/services';
+import { PaginatedTravels } from '@/travel/types';
+import { ListTravelInput } from '@/travel/dto/list-travel.input';
+
+import { createTravelInputDtoStub } from '../../../factories/travel/dto/create-travel-input-dto.stub';
+import { travelModelFactory } from '../../../factories/travel/travel.model.factory';
 
 describe('TravelResolver', () => {
   let server;
@@ -87,6 +92,116 @@ describe('TravelResolver', () => {
 
       const dbTravel = await travelService.findById(travel.id);
       expect(dbTravel).toMatchObject(travel);
+    });
+  });
+
+  describe('findAll', () => {
+    const query = gql`
+      query getPaginatedTravels($take: Int!, $skip: Int!) {
+        travels(take: $take, skip: $skip) {
+          data {
+            id
+            description
+            isPublic
+            moods {
+              culture
+              history
+              nature
+              party
+              relax
+            }
+            name
+            numberOfDays
+            numberOfNights
+            createdAt
+            tours(take: 4, skip: 0) {
+              data {
+                id
+                name
+              }
+            }
+          }
+          pagination {
+            page
+            perPage
+            totalPage
+            total
+          }
+        }
+      }
+    `;
+
+    it('should return a list of travels', async () => {
+      const authToken = await IntegrationTestManager.getAuthorizedUserToken();
+
+      const travels = await Promise.all([
+        travelModelFactory(),
+        travelModelFactory(),
+        travelModelFactory(),
+        travelModelFactory(),
+        travelModelFactory(),
+        travelModelFactory(),
+      ]);
+
+      const listTravelInput: ListTravelInput = {
+        take: 3,
+        skip: 0,
+      };
+
+      const response = await request<{ travels: PaginatedTravels }>(server)
+        .set('Authorization', `Bearer ${authToken}`)
+        .query(query)
+        .variables({ ...listTravelInput });
+
+      expect(response.data.travels.data).toHaveLength(listTravelInput.take);
+      expect(response.data.travels.pagination.page).toBe(1);
+      expect(response.data.travels.pagination.perPage).toBe(
+        listTravelInput.take,
+      );
+      expect(response.data.travels.pagination.totalPage).toBe(
+        travels.length / listTravelInput.take,
+      );
+      expect(response.data.travels.pagination.total).toBe(travels.length);
+    });
+
+    it('should return a list of public travels for non authorized users', async () => {
+      const travels = await Promise.all([
+        travelModelFactory({ travelInput: { isPublic: true } }),
+        travelModelFactory({ travelInput: { isPublic: true } }),
+        travelModelFactory({ travelInput: { isPublic: true } }),
+        travelModelFactory({ travelInput: { isPublic: false } }),
+        travelModelFactory({ travelInput: { isPublic: false } }),
+        travelModelFactory({ travelInput: { isPublic: false } }),
+      ]);
+
+      const listTravelInput: ListTravelInput = {
+        take: travels.length,
+        skip: 0,
+      };
+
+      const response = await request<{ travels: PaginatedTravels }>(server)
+        .query(query)
+        .variables({ ...listTravelInput });
+
+      expect(response.data.travels.data).toHaveLength(3);
+      expect(response.data.travels.pagination.page).toBe(1);
+      expect(response.data.travels.pagination.perPage).toBe(
+        listTravelInput.take,
+      );
+      expect(response.data.travels.pagination.totalPage).toBe(1);
+      expect(response.data.travels.pagination.total).toBe(3);
+    });
+
+    it('should return an error for invalid input', async () => {
+      const response = await request<{ travels: PaginatedTravels }>(server)
+        .query(query)
+        .variables({ take: 'hello', skip: 0 });
+
+      const error = response.errors[0];
+      expect(error.message).toBe(
+        'Variable "$take" got invalid value "hello"; Int cannot represent non-integer value: "hello"',
+      );
+      expect(error.extensions.code).toBe('BAD_USER_INPUT');
     });
   });
 });

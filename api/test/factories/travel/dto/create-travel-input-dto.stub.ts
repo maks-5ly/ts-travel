@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { isDefined } from 'class-validator';
 
 export function createTravelInputDtoStub(
-  createTravelInput?: CreateTravelInput,
+  createTravelInput?: Partial<CreateTravelInput>,
 ): CreateTravelInput {
   return {
     name: isDefined(createTravelInput?.name)

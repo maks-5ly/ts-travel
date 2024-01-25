@@ -1,4 +1,4 @@
-ARG NODE_IMAGE_TAG=18-alpine
+ARG NODE_IMAGE_TAG=20-alpine
 
 ###############################
 # BUILD FOR LOCAL DEVELOPMENT #

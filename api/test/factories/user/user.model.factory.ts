@@ -1,20 +1,23 @@
-import { AppModule } from '@/app.module';
-import { Test } from '@nestjs/testing';
 import { CreateUserInput } from '@/user/dto';
 import { UserService } from '@/user/services';
+import { IntegrationTestManager } from '../../integration/integratoin-test-manager';
 
 export async function userModelFactory(createUserInput: CreateUserInput) {
-  const module = await Test.createTestingModule({
-    imports: [AppModule],
-  }).compile();
+  // const module = await Test.createTestingModule({
+  //   imports: [AppModule],
+  // }).compile();
+  //
+  // const app = module.createNestApplication({
+  //   bodyParser: true,
+  //   rawBody: true,
+  // });
+  //
+  // await app.init();
 
-  const app = module.createNestApplication();
-
-  await app.init();
-  const userService = app.get<UserService>(UserService);
+  const userService =
+    IntegrationTestManager.getService<UserService>(UserService);
 
   const user = userService.create(createUserInput);
 
-  await app.close();
   return user;
 }
